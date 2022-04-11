@@ -9,7 +9,7 @@ part 'register_state.dart';
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final AuthService authService;
   RegisterBloc({required this.authService}) : super(RegisterState()) {
-    on<SignInEvent>((event, emit) async {
+    on<SignUpEvent>((event, emit) async {
       emit(state.copyWith(status: Status.submissionInProgress));
       try {
         await authService.registerWithEmail(

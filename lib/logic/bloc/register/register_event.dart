@@ -4,10 +4,10 @@ part of 'register_bloc.dart';
 @immutable
 abstract class RegisterEvent {}
 
-class SignInEvent extends RegisterEvent {
+class SignUpEvent extends RegisterEvent {
   final String email;
   final String pass;
-  SignInEvent({
+  SignUpEvent({
     required this.email,
     required this.pass,
   });

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_app/constains/enums.dart';
+import 'package:flutter_firebase_app/logic/bloc/login/login_bloc.dart';
 
 import '../../logic/bloc/register/register_bloc.dart';
 
@@ -25,17 +27,40 @@ class WelcomeScreen extends StatelessWidget {
       AuthWidget(pageController: _pageController),
       RegisterWidget(pageController: _pageController)
     ];
-    return PageView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      controller: _pageController,
-      itemBuilder: (context, index) => Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: 350,
-          child: pages[index],
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
+        if (state.status == Status.submissionFailure) {
+          switch (state.errorMsg) {
+            case 'unknown':
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('вы не ввели данные')));
+              break;
+            case 'user-not-found':
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('пользователь не найден')));
+              break;
+            case 'wrong-password':
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('не правильный пароль')));
+              break;
+            default:
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('что то пошло не так')));
+          }
+        }
+      },
+      child: PageView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _pageController,
+        itemBuilder: (context, index) => Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: 350,
+            child: pages[index],
+          ),
         ),
+        itemCount: 2,
       ),
-      itemCount: 2,
     );
   }
 }
@@ -70,12 +95,9 @@ class AuthWidget extends StatelessWidget {
         Center(
           child: ElevatedButton(
             onPressed: () {
-              // if (i == 1) {
-              // context.read<RegisterBloc>().add(SignInEvent(
-              //     email: emailController.text,
-              //     pass: passController.text));
-              // }
-              // Navigator.of(context).pushReplacementNamed('/home');
+              FocusManager.instance.primaryFocus?.unfocus();
+              context.read<LoginBloc>().add(SignInEvent(
+                  email: emailController.text, pass: passController.text));
             },
             child: const Text('войти'),
           ),
@@ -126,7 +148,7 @@ class RegisterWidget extends StatelessWidget {
         Center(
           child: ElevatedButton(
             onPressed: () {
-              context.read<RegisterBloc>().add(SignInEvent(
+              context.read<RegisterBloc>().add(SignUpEvent(
                   email: emailController.text, pass: passController.text));
             },
             child: BlocBuilder<RegisterBloc, RegisterState>(

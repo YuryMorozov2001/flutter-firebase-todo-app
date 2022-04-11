@@ -13,6 +13,12 @@ class AuthService {
     }
   }
 
+  Future signIn({email, pass}) async {
+    final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: pass);
+    return userCredential.user;
+  }
+
   getCurrentUser() {
     try {
       final userCredential = _firebaseAuth.currentUser?.toString();
@@ -33,10 +39,9 @@ class AuthService {
     }
   }
 
-  Future logOut({email, pass}) async {
+  Future signOut({email, pass}) async {
     try {
-      final userCredential = await _firebaseAuth.signOut();
-      return userCredential;
+      await _firebaseAuth.signOut();
     } catch (e) {
       debugPrint(e.toString());
     }
