@@ -29,6 +29,7 @@ class AuthService {
       return userCredential.user;
     } catch (e) {
       debugPrint(e.toString());
+      return e;
     }
   }
 
