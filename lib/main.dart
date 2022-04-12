@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_app/logic/bloc/login/login_bloc.dart';
+import 'package:flutter_firebase_app/logic/bloc/user/user_bloc.dart';
 import 'package:flutter_firebase_app/router/router.dart';
 import 'package:flutter_firebase_app/service/auth_service.dart';
 
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<LoginBloc>(
           create: (BuildContext context) => LoginBloc(authService: authService),
+        ),
+        BlocProvider<UserBloc>(
+          create: (BuildContext context) => UserBloc(authService: authService),
         ),
       ],
       child: MaterialApp(

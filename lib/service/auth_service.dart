@@ -29,21 +29,20 @@ class AuthService {
   }
 
   Future registerWithEmail({email, pass}) async {
+    final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: pass);
+    return userCredential.user;
+  }
+
+  signOut() async {
     try {
-      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: pass);
-      return userCredential.user;
+      await FirebaseAuth.instance.signOut();
     } catch (e) {
       debugPrint(e.toString());
-      return e;
     }
   }
 
-  Future signOut({email, pass}) async {
-    try {
-      await _firebaseAuth.signOut();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+  Stream userStream() {
+    return _firebaseAuth.userChanges().cast();
   }
 }

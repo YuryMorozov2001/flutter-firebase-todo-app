@@ -2,18 +2,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_app/constains/enums.dart';
+import 'package:flutter_firebase_app/data/user.dart';
 import 'package:flutter_firebase_app/logic/bloc/login/login_bloc.dart';
+import 'package:flutter_firebase_app/screens/home/home_page.dart';
 
 import '../../logic/bloc/register/register_bloc.dart';
+import '../../logic/bloc/user/user_bloc.dart';
 
 class InitPage extends StatelessWidget {
   const InitPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: WelcomeScreen(),
-      appBar: AppBar(title: const Text('bloc and firebase')),
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        return state.user != const UserModel()
+            ? const HomePage()
+            : WelcomeScreen();
+      },
     );
   }
 }
@@ -27,39 +33,41 @@ class WelcomeScreen extends StatelessWidget {
       AuthWidget(pageController: _pageController),
       RegisterWidget(pageController: _pageController)
     ];
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
-        if (state.status == Status.submissionFailure) {
-          switch (state.errorMsg) {
-            case 'unknown':
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('вы не ввели данные')));
-              break;
-            case 'user-not-found':
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('пользователь не найден')));
-              break;
-            case 'wrong-password':
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('не правильный пароль')));
-              break;
-            default:
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('что то пошло не так')));
+    return Scaffold(
+      body: BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          if (state.status == Status.submissionFailure) {
+            switch (state.errorMsg) {
+              case 'unknown':
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('вы не ввели данные')));
+                break;
+              case 'user-not-found':
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('пользователь не найден')));
+                break;
+              case 'wrong-password':
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('не правильный пароль')));
+                break;
+              default:
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('что то пошло не так')));
+            }
           }
-        }
-      },
-      child: PageView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _pageController,
-        itemBuilder: (context, index) => Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: 350,
-            child: pages[index],
+        },
+        child: PageView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _pageController,
+          itemBuilder: (context, index) => Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 350,
+              child: pages[index],
+            ),
           ),
+          itemCount: 2,
         ),
-        itemCount: 2,
       ),
     );
   }
@@ -99,7 +107,20 @@ class AuthWidget extends StatelessWidget {
               context.read<LoginBloc>().add(SignInEvent(
                   email: emailController.text, pass: passController.text));
             },
-            child: const Text('войти'),
+            child: BlocBuilder<LoginBloc, LoginState>(
+              builder: (context, state) {
+                if (state.status == Status.submissionInProgress) {
+                  return const SizedBox(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                    width: 15,
+                    height: 15,
+                  );
+                }
+                return const Text('войти');
+              },
+            ),
           ),
         ),
         const SizedBox(
@@ -107,7 +128,7 @@ class AuthWidget extends StatelessWidget {
         ),
         GestureDetector(
           child: const Text(
-            'у меня есть аккаунт',
+            'у меня нет аккаунта',
             style: TextStyle(decoration: TextDecoration.underline),
           ),
           onTap: () => pageController.nextPage(

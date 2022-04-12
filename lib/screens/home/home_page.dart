@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_app/data/todo.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_firebase_app/logic/bloc/user/user_bloc.dart';
 
 import 'widgets/home_body.dart';
 
@@ -13,11 +14,13 @@ class HomePage extends StatelessWidget {
         title: const Text('Домашнаяя страница'),
         actions: [
           IconButton(
-              onPressed: () => print('logout'), icon: const Icon(Icons.logout))
+              onPressed: () {
+                context.read<UserBloc>().add(SignOutEvent());
+              },
+              icon: const Icon(Icons.logout))
         ],
       ),
       body: const HomeBody(),
     );
   }
 }
-

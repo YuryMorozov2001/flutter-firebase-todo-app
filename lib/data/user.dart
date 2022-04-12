@@ -1,8 +1,13 @@
-class UserModel {
-  String uid;
-  String email;
-  UserModel({
-    required this.uid,
-    required this.email,
+import 'package:equatable/equatable.dart';
+
+class UserModel extends Equatable {
+  final String? uid;
+  final String? email;
+  const UserModel({
+     this.uid,
+     this.email,
   });
+
+  @override 
+  List<Object?> get props => [uid, email];
 }

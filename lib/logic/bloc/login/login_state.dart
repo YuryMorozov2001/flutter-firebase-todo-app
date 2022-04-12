@@ -3,10 +3,10 @@ part of 'login_bloc.dart';
 
 class LoginState {
   final Status status;
-  final String errorMsg;
+  final String? errorMsg;
   LoginState({
     this.status = Status.empty,
-    this.errorMsg = '',
+    this.errorMsg,
   });
 
   LoginState copyWith({
