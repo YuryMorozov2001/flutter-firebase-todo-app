@@ -9,42 +9,40 @@ import '../../../data/todo.dart';
 import 'list_widget.dart';
 
 class HomeBody extends StatelessWidget {
-  const HomeBody({
+  HomeBody({
     Key? key,
   }) : super(key: key);
-
+  final TextEditingController textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    context.read<TodoBloc>().add(AddTodoEvent(
-                        task: 'task',
-                        isComplete: true,
-                        uid: context.read<UserBloc>().state.user?.uid));
-                  },
-                  child: const Text('create true')),
-              const SizedBox(width: 15),
-              ElevatedButton(
-                  onPressed: () {
-                    context.read<TodoBloc>().add(AddTodoEvent(
-                        task: 'task',
-                        isComplete: false,
-                        uid: context.read<UserBloc>().state.user?.uid));
-                  },
-                  child: const Text('create false')),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextField(
+          controller: textEditingController,
+        ),
+        ElevatedButton(
+            onPressed: () {
+              context.read<TodoBloc>().add(AddTodoEvent(
+                  task: textEditingController.text,
+                  isComplete: false,
+                  uid: context.read<UserBloc>().state.user?.uid));
+              textEditingController.clear();
+            },
+            child: const Text('create true')),
+        Expanded(
+          child: Column(
+            children: const [
+              Expanded(child: ListViewOwnWidget()),
+              Divider( 
+                thickness: 2, 
+                color: Colors.orange,
+              ),
+              Expanded(child: ListViewPublicWidget()),
             ],
           ),
-          const Text('Привет, %USER_NAME%'),
-          const ListViewWidget(),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

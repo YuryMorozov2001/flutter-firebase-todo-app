@@ -24,6 +24,7 @@ class RemoveTodoEvent extends TodoEvent {
     required this.uid,
   });
 }
+
 class AddTodoEvent extends TodoEvent {
   final String task;
   final bool isComplete;
@@ -32,5 +33,14 @@ class AddTodoEvent extends TodoEvent {
     required this.task,
     required this.isComplete,
     required this.uid,
+  });
+}
+
+class UpdateTodoEvent extends TodoEvent {
+  final List newArr;
+  final String? uid;
+  UpdateTodoEvent({
+    required this.newArr,
+    this.uid,
   });
 }

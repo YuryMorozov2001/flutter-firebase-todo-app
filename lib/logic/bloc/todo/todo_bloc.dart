@@ -26,5 +26,8 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       await fireStoreService.addTodo(
           isComplete: event.isComplete, task: event.task, uid: event.uid);
     });
+    on<UpdateTodoEvent>((event, emit) async {
+      await fireStoreService.updateTodo(newArr: event.newArr, uid: event.uid);
+    });
   }
 }

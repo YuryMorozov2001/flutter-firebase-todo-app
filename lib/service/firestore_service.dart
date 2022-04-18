@@ -14,6 +14,12 @@ class FireStoreService {
     );
   }
 
+  Future<void> updateTodo({newArr, uid}) async {
+    await todo.doc('$uid').set(
+      {'todos': newArr},
+    );
+  }
+
   Future<void> removeTodo({isComplete, task, uid}) async {
     await todo.doc('$uid').update(
       {
