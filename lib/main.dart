@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_firebase_app/logic/bloc/login/login_bloc.dart';
-import 'package:flutter_firebase_app/logic/bloc/user/user_bloc.dart';
-import 'package:flutter_firebase_app/router/router.dart';
-import 'package:flutter_firebase_app/service/auth_service.dart';
+import 'package:flutter_firebase_app/logic/bloc/todo/todo_bloc.dart';
+import 'package:flutter_firebase_app/service/firestore_service.dart';
+import 'logic/bloc/login/login_bloc.dart';
+import 'logic/bloc/user/user_bloc.dart';
+import 'router/router.dart';
+import 'service/auth_service.dart';
 
 import 'logic/bloc/register/register_bloc.dart';
 
@@ -19,6 +21,7 @@ class MyApp extends StatelessWidget {
 
   final AppRouter _appRouter = AppRouter();
   final AuthService authService = AuthService();
+  final FireStoreService fireStoreService = FireStoreService();
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,10 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<UserBloc>(
           create: (BuildContext context) => UserBloc(authService: authService),
+        ),
+        BlocProvider<TodoBloc>(
+          create: (BuildContext context) =>
+              TodoBloc(fireStoreService: fireStoreService)..add(GetTodoEvent(todoStream: fireStoreService.getTodoStream())),
         ),
       ],
       child: MaterialApp(

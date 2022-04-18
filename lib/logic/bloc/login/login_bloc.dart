@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_firebase_app/service/auth_service.dart';
+import '../../../service/auth_service.dart';
 
 import '../../../constains/enums.dart';
 

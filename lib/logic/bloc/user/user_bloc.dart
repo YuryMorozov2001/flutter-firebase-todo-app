@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_firebase_app/data/user.dart';
-import 'package:flutter_firebase_app/service/auth_service.dart';
 import 'package:meta/meta.dart';
 
 import '../../../constains/enums.dart';
+import '../../../data/user.dart';
+import '../../../service/auth_service.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -28,7 +28,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       await authService.signOut();
       emit(state.copyWith(
           status: Status.submissionSuccess,
-          user: UserModel(uid: null, email: null)));
+          user: const UserModel(uid: null, email: null)));
     });
   }
   @override
