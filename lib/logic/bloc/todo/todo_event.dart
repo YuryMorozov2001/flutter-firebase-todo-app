@@ -5,42 +5,46 @@ abstract class TodoEvent {
   const TodoEvent();
 }
 
-class GetTodoEvent extends TodoEvent {
+class ReadTodoEvent extends TodoEvent {
   final Stream<QuerySnapshot>? todoStream;
-  GetTodoEvent({
+  ReadTodoEvent({
     this.todoStream,
   }) {
     print('lets start');
   }
 }
 
-class RemoveTodoEvent extends TodoEvent {
+class DeleteTodoEvent extends TodoEvent {
   final String task;
   final bool isComplete;
   final String? uid;
-  RemoveTodoEvent({
+  final String? creator;
+  DeleteTodoEvent({
     required this.task,
     required this.isComplete,
     required this.uid,
+    required this.creator
   });
 }
 
-class AddTodoEvent extends TodoEvent {
+class CreateTodoEvent extends TodoEvent {
   final String task;
   final bool isComplete;
   final String? uid;
-  AddTodoEvent({
+  final String? creator;
+  CreateTodoEvent({
     required this.task,
     required this.isComplete,
     required this.uid,
+    required this.creator,
   });
 }
 
 class UpdateTodoEvent extends TodoEvent {
   final List newArr;
-  final String? uid;
+  final String? uid; 
   UpdateTodoEvent({
     required this.newArr,
-    this.uid,
+    required this.uid, 
   });
 }

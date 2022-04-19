@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_firebase_app/logic/bloc/todo/todo_bloc.dart';
-import 'package:flutter_firebase_app/service/firestore_service.dart';
 
-import '../../../data/todo.dart';
+import '../../../logic/bloc/todo/todo_bloc.dart';
 import '../../../logic/bloc/user/user_bloc.dart';
 
 class ListViewOwnWidget extends StatelessWidget {
@@ -38,10 +36,12 @@ class ListViewOwnWidget extends StatelessWidget {
                   return ListView.builder(
                     itemBuilder: (context, i) => GestureDetector(
                       onLongPress: () {
-                        context.read<TodoBloc>().add(RemoveTodoEvent(
+                        context.read<TodoBloc>().add(DeleteTodoEvent(
                               task: userTodo[i]['task'],
                               isComplete: userTodo[i]['isComplete'],
                               uid: context.read<UserBloc>().state.user?.uid,
+                              creator:
+                                  context.read<UserBloc>().state.user?.email,
                             ));
                       },
                       child: ListItem(
@@ -78,20 +78,16 @@ class ListViewPublicWidget extends StatelessWidget {
               if (!snapshot.hasData || snapshot.data?.size == 0) {
                 return const Center(child: Text('данных нет'));
               } else if (snapshot.hasData) {
-                // dynamic usersTodo;
-                // snapshot.data?.docs.forEach((element) {
-                //   print(element.data());
-                // });
                 List todo = [];
                 snapshot.data?.docs.forEach((element) {
                   element.get('todos').forEach((e) => todo.add(e));
-                  // print(element.get('todos'));
                 });
                 return ListView.builder(
                   itemBuilder: (context, i) => ListItem(
                     i: i,
                     isComplete: todo[i]['isComplete'],
                     task: todo[i]['task'],
+                    creator: todo[i]['creator'],
                   ),
                   itemCount: todo.length,
                   shrinkWrap: true,
@@ -108,11 +104,13 @@ class ListItem extends StatelessWidget {
   const ListItem({
     Key? key,
     this.userTodo,
+    this.creator = '',
     required this.i,
     required this.isComplete,
     required this.task,
   }) : super(key: key);
   final dynamic userTodo;
+  final String creator;
   final int i;
   final bool isComplete;
   final String task;
@@ -130,7 +128,6 @@ class ListItem extends StatelessWidget {
               onChanged: (_) {
                 if (userTodo != null) {
                   userTodo[i]['isComplete'] = !userTodo[i]['isComplete'];
-
                   context.read<TodoBloc>().add(UpdateTodoEvent(
                         newArr: userTodo,
                         uid: context.read<UserBloc>().state.user?.uid,
@@ -140,9 +137,20 @@ class ListItem extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Text(
-              task.toString(),
-              style: const TextStyle(fontSize: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  task,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                creator == ''
+                    ? const SizedBox()
+                    : Text(
+                        creator,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+              ],
             ),
           ),
         ],

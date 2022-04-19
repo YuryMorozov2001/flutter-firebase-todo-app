@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_firebase_app/service/firestore_service.dart';
-import '../../logic/bloc/user/user_bloc.dart';
 
+import '../../logic/bloc/user/user_bloc.dart';
 import 'widgets/home_body.dart';
 
 class HomePage extends StatelessWidget {

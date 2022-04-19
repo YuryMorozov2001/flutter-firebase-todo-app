@@ -1,11 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_firebase_app/logic/bloc/todo/todo_bloc.dart';
-import 'package:flutter_firebase_app/logic/bloc/user/user_bloc.dart';
-import 'package:flutter_firebase_app/service/firestore_service.dart';
-import 'package:bloc/bloc.dart';
-import '../../../data/todo.dart';
+
+import '../../../logic/bloc/todo/todo_bloc.dart';
+import '../../../logic/bloc/user/user_bloc.dart';
 import 'list_widget.dart';
 
 class HomeBody extends StatelessWidget {
@@ -18,24 +15,37 @@ class HomeBody extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        TextField(
-          controller: textEditingController,
+        const SizedBox(height: 16),
+        SizedBox(
+          child: TextField(
+            controller: textEditingController,
+            decoration:   InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              hintText: 'ur task',
+            ),
+          ),
+          width: MediaQuery.of(context).size.width * 0.9,
         ),
         ElevatedButton(
             onPressed: () {
-              context.read<TodoBloc>().add(AddTodoEvent(
-                  task: textEditingController.text,
-                  isComplete: false,
-                  uid: context.read<UserBloc>().state.user?.uid));
+              context.read<TodoBloc>().add(
+                    CreateTodoEvent(
+                        task: textEditingController.text,
+                        isComplete: false,
+                        uid: context.read<UserBloc>().state.user?.uid,
+                        creator: context.read<UserBloc>().state.user?.email),
+                  );
               textEditingController.clear();
             },
-            child: const Text('create true')),
+            child: const Text('create todo')),
         Expanded(
           child: Column(
             children: const [
               Expanded(child: ListViewOwnWidget()),
-              Divider( 
-                thickness: 2, 
+              Divider(
+                thickness: 2,
                 color: Colors.orange,
               ),
               Expanded(child: ListViewPublicWidget()),

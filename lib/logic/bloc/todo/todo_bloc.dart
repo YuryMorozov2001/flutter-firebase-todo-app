@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_firebase_app/service/firestore_service.dart';
+import '../../../service/firestore_service.dart';
 
 import '../../../constains/enums.dart';
 
@@ -14,20 +14,26 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   FireStoreService fireStoreService;
 
   TodoBloc({required this.fireStoreService}) : super(const TodoState()) {
-    on<GetTodoEvent>((event, emit) {
+    on<CreateTodoEvent>((event, emit) async {
+      await fireStoreService.addTodo(
+          isComplete: event.isComplete,
+          task: event.task,
+          uid: event.uid,
+          creator: event.creator);
+    });
+    on<ReadTodoEvent>((event, emit) {
       emit(state.copyWith(
           status: Status.submissionSuccess, todosStream: event.todoStream));
     });
-    on<RemoveTodoEvent>((event, emit) async {
-      await fireStoreService.removeTodo(
-          isComplete: event.isComplete, task: event.task, uid: event.uid);
-    });
-    on<AddTodoEvent>((event, emit) async {
-      await fireStoreService.addTodo(
-          isComplete: event.isComplete, task: event.task, uid: event.uid);
-    });
     on<UpdateTodoEvent>((event, emit) async {
       await fireStoreService.updateTodo(newArr: event.newArr, uid: event.uid);
+    });
+    on<DeleteTodoEvent>((event, emit) async {
+      await fireStoreService.removeTodo(
+          isComplete: event.isComplete,
+          task: event.task,
+          uid: event.uid,
+          creator: event.creator);
     });
   }
 }

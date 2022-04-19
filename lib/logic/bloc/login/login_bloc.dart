@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../service/auth_service.dart';
 
 import '../../../constains/enums.dart';
+import '../../../service/auth_service.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';

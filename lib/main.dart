@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_firebase_app/logic/bloc/todo/todo_bloc.dart';
-import 'package:flutter_firebase_app/service/firestore_service.dart';
+import 'logic/bloc/todo/todo_bloc.dart';
+import 'service/firestore_service.dart';
 import 'logic/bloc/login/login_bloc.dart';
 import 'logic/bloc/user/user_bloc.dart';
 import 'router/router.dart';
@@ -38,8 +38,9 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) => UserBloc(authService: authService),
         ),
         BlocProvider<TodoBloc>(
-          create: (BuildContext context) =>
-              TodoBloc(fireStoreService: fireStoreService)..add(GetTodoEvent(todoStream: fireStoreService.getTodoStream())),
+          create: (BuildContext context) => TodoBloc(
+              fireStoreService: fireStoreService)
+            ..add(ReadTodoEvent(todoStream: fireStoreService.getTodoStream())),
         ),
       ],
       child: MaterialApp(
