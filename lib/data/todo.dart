@@ -17,7 +17,4 @@ class Todo {
     };
   }
 }
-
-class TodoModel {
-  // List<Task> tasks;
-}
+ 
